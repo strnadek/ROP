@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextEditor", "WindowsFormsApp1\TextEditor.csproj", "{97C8B1C1-2426-41E7-B621-3ADB2E3D71AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextEditor", "TextEditor\TextEditor.csproj", "{97C8B1C1-2426-41E7-B621-3ADB2E3D71AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
