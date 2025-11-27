@@ -19,7 +19,7 @@
     "0x[0-9A-Fa-f]+",
     "0b[01]+"
   ],
-  "colors": {
+  "barvy": {
     "slova": "Yellow",
     "operatory": "Red",
     "cisla": "Blue"
