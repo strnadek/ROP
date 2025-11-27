@@ -1,0 +1,5 @@
+C:\Users\Tomáš\Desktop\ROP\Textový editor\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.AssemblyReference.cache
+C:\Users\Tomáš\Desktop\ROP\Textový editor\WindowsFormsApp1\obj\Debug\TextEditorSyntax.Form1.resources
+C:\Users\Tomáš\Desktop\ROP\Textový editor\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\Tomáš\Desktop\ROP\Textový editor\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
+C:\Users\Tomáš\Desktop\ROP\Textový editor\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
