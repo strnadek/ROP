@@ -1,10 +1,17 @@
-{  
+{
   "slova": [
-    "int",
-    "string",
     "if",
     "else",
-    "bool"
+    "for",
+    "foreach",
+    "return"
+  ],
+  "typy": [
+    "int",
+    "string",
+    "bool",
+    "double",
+    "char"
   ],
   "operatory": [
     "+",
@@ -20,8 +27,15 @@
     "0b[01]+"
   ],
   "barvy": {
-    "slova": "Yellow",
-    "operatory": "Red",
+    "slova": "Purple",
+    "typy": "Red",
+    "operatory": "Orange",
     "cisla": "Blue"
+  },
+  "jazyk": {
+    "C#": [
+      "slova",
+      "typy"
+    ]
   }
 }
