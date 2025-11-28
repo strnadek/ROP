@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -21,6 +21,7 @@ namespace TextEditor
         public class NastaveniSyntaxe
         {
             public List<string> slova { get; set; }
+            public List<string> typy { get; set; }
             public List<string> operatory { get; set; }
             public List<string> cisla { get; set; }
             public Barvy barvy { get; set; }
@@ -29,6 +30,7 @@ namespace TextEditor
         public class Barvy
         {
             public string slova { get; set; }
+            public string typy { get; set; }
             public string operatory { get; set; }
             public string cisla { get; set; }
         }
@@ -45,8 +47,9 @@ namespace TextEditor
             {
                 nastaveni.barvy = new Barvy
                 {
-                    slova = "Yellow",
-                    operatory = "Red",
+                    slova = "Purple",
+                    typy = "Red",
+                    operatory = "Orange",
                     cisla = "Blue"
                 };
             }
@@ -69,7 +72,21 @@ namespace TextEditor
             if (nastaveni.barvy != null)
             {
                 if (nastaveni.slova != null)
-                    ZvyraznitSlova(nastaveni.slova, Color.FromName(nastaveni.barvy.slova));
+                {
+                    Zvyraznit(nastaveni.slova, Color.FromName(nastaveni.barvy.slova));
+                }
+                if(nastaveni.typy != null)
+                {
+                    Zvyraznit(nastaveni.typy, Color.FromName(nastaveni.barvy.typy));
+                }
+                if(nastaveni.operatory != null)
+                {
+                    ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory));
+                }
+                if(nastaveni.cisla != null)
+                {
+                    Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla));
+                }
             }
 
             textbox.SelectionStart = start;
@@ -77,11 +94,24 @@ namespace TextEditor
             textbox.ResumeLayout();
         }
 
-        private void ZvyraznitSlova(List<string> slova, Color barva)
+        private void Zvyraznit(List<string> seznam, Color barva)
         {
-            foreach (var slovo in slova)
+            foreach (var polozka in seznam)
             {
-                var nalezeno = Regex.Matches(textbox.Text, $@"\b{slovo}\b");
+                var nalezeno = Regex.Matches(textbox.Text, $@"\b{polozka}\b");
+                foreach (Match m in nalezeno)
+                {
+                    textbox.Select(m.Index, m.Length);
+                    textbox.SelectionColor = barva;
+                }
+            }
+        }
+
+        private void ZvyraznitSymbol(List<string> seznam, Color barva)
+        {
+            foreach (var symbol in seznam)
+            {
+                var nalezeno = Regex.Matches(textbox.Text, Regex.Escape(symbol));
                 foreach (Match m in nalezeno)
                 {
                     textbox.Select(m.Index, m.Length);
