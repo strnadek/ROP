@@ -42,7 +42,9 @@ namespace TextEditor
         public void NacistJson(string soubor)
         {
             if (!File.Exists(soubor))
+            {
                 return;
+            }
 
             string obsah = File.ReadAllText(soubor);
             nastaveni = JsonConvert.DeserializeObject<NastaveniSyntaxe>(obsah);
@@ -155,4 +157,5 @@ namespace TextEditor
             ZvyraznitText();
         }
     }
+
 }
