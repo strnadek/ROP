@@ -13,6 +13,7 @@ namespace TextEditor
     public partial class Form1 : Form
     {
         ZvyraznovacSyntaxe zvyraznovac;
+        string jazyk;
 
         public Form1()
         {
@@ -27,8 +28,31 @@ namespace TextEditor
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
-
             zvyraznovac.ZvyraznitText();
+            if (comboBox1.SelectedItem == null || string.IsNullOrEmpty(comboBox1.Text))
+            {
+                MessageBox.Show("Vyberte prosím jazyk");
+                richTextBox1.Text = string.Empty;
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 0)
+            {
+                jazyk = "C#";
+                zvyraznovac.VyberJazyku(jazyk);
+            }
+            else if (comboBox1.SelectedIndex == 1)
+            {
+                jazyk = "PHP";
+                zvyraznovac.VyberJazyku(jazyk);
+            }
+            else if (comboBox1.SelectedIndex == 2)
+            {
+                jazyk = "JavaScript";
+                zvyraznovac.VyberJazyku(jazyk);
+            }
         }
     }
 }

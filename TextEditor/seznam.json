@@ -1,12 +1,12 @@
 {
-  "slova": [
+  "slovaC": [
     "if",
     "else",
     "for",
     "foreach",
     "return"
   ],
-  "typy": [
+  "typyC": [
     "int",
     "string",
     "bool",
@@ -27,15 +27,17 @@
     "0b[01]+"
   ],
   "barvy": {
-    "slova": "Purple",
-    "typy": "Red",
+    "slovaC": "Purple",
+    "typyC": "Red",
     "operatory": "Orange",
     "cisla": "Blue"
   },
   "jazyk": {
     "C#": [
-      "slova",
-      "typy"
+      "slovaC",
+      "typyC",
+      "operatory",
+      "cisla"
     ]
   }
 }

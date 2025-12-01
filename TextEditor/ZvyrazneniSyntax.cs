@@ -13,6 +13,9 @@ namespace TextEditor
         private RichTextBox textbox;
         private NastaveniSyntaxe nastaveni;
 
+        private bool blokovat = false;
+        private string aktualniJazyk = null;
+
         public ZvyraznovacSyntaxe(RichTextBox textbox)
         {
             this.textbox = textbox;
@@ -20,17 +23,18 @@ namespace TextEditor
 
         public class NastaveniSyntaxe
         {
-            public List<string> slova { get; set; }
-            public List<string> typy { get; set; }
+            public List<string> slovaC { get; set; }
+            public List<string> typyC { get; set; }
             public List<string> operatory { get; set; }
             public List<string> cisla { get; set; }
             public Barvy barvy { get; set; }
+            public Dictionary<string, List<string>> jazyk { get; set; }
         }
 
         public class Barvy
         {
-            public string slova { get; set; }
-            public string typy { get; set; }
+            public string slovaC { get; set; }
+            public string typyC { get; set; }
             public string operatory { get; set; }
             public string cisla { get; set; }
         }
@@ -47,20 +51,33 @@ namespace TextEditor
             {
                 nastaveni.barvy = new Barvy
                 {
-                    slova = "Purple",
-                    typy = "Red",
+                    slovaC = "Purple",
+                    typyC = "Red",
                     operatory = "Orange",
                     cisla = "Blue"
                 };
             }
         }
-
         public void ZvyraznitText()
         {
-            if (nastaveni == null)
+            if (nastaveni == null || aktualniJazyk == null)
             {
                 return;
             }
+
+            if (blokovat)
+            {
+                return;
+            }
+            blokovat = true;
+
+            if (!nastaveni.jazyk.ContainsKey(aktualniJazyk))
+            {
+                blokovat = false;
+                return;
+            }
+
+            var povolene = nastaveni.jazyk[aktualniJazyk];
 
             int start = textbox.SelectionStart;
             int delka = textbox.SelectionLength;
@@ -69,29 +86,31 @@ namespace TextEditor
             textbox.SelectAll();
             textbox.SelectionColor = Color.Black;
 
-            if (nastaveni.barvy != null)
+            if (povolene.Contains("slovaC"))
             {
-                if (nastaveni.slova != null)
-                {
-                    Zvyraznit(nastaveni.slova, Color.FromName(nastaveni.barvy.slova));
-                }
-                if(nastaveni.typy != null)
-                {
-                    Zvyraznit(nastaveni.typy, Color.FromName(nastaveni.barvy.typy));
-                }
-                if(nastaveni.operatory != null)
-                {
-                    ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory));
-                }
-                if(nastaveni.cisla != null)
-                {
-                    Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla));
-                }
+                Zvyraznit(nastaveni.slovaC, Color.FromName(nastaveni.barvy.slovaC));
             }
-
+                
+            if (povolene.Contains("typyC"))
+            {
+                Zvyraznit(nastaveni.typyC, Color.FromName(nastaveni.barvy.typyC));
+            }
+                
+            if (povolene.Contains("operatory"))
+            {
+                ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory));
+            }
+                
+            if (povolene.Contains("cisla"))
+            {
+                Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla));
+            }
+                
             textbox.SelectionStart = start;
             textbox.SelectionLength = delka;
+
             textbox.ResumeLayout();
+            blokovat = false;
         }
 
         private void Zvyraznit(List<string> seznam, Color barva)
@@ -118,6 +137,22 @@ namespace TextEditor
                     textbox.SelectionColor = barva;
                 }
             }
+        }
+
+        public void VyberJazyku(string jazyk)
+        {
+            if (jazyk == null || nastaveni == null || nastaveni.jazyk == null)
+            {
+                return;
+            }
+
+            if (!nastaveni.jazyk.ContainsKey(jazyk))
+            {
+                return;
+            }
+
+            aktualniJazyk = jazyk;
+            ZvyraznitText();
         }
     }
 }
