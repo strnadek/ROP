@@ -40,3 +40,17 @@ C:\Users\Tomáš\Desktop\ROP\TextEditor\obj\Debug\TextEditor.csproj.CoreCompileI
 C:\Users\Tomáš\Desktop\ROP\TextEditor\obj\Debug\TextEditor.csproj.Up2Date
 C:\Users\Tomáš\Desktop\ROP\TextEditor\obj\Debug\WindowsFormsApp1.exe
 C:\Users\Tomáš\Desktop\ROP\TextEditor\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\Tomáš\Desktop\sada\TextEditor\bin\Debug\WindowsFormsApp1.exe.config
+C:\Users\Tomáš\Desktop\sada\TextEditor\bin\Debug\WindowsFormsApp1.exe
+C:\Users\Tomáš\Desktop\sada\TextEditor\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\Tomáš\Desktop\sada\TextEditor\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Tomáš\Desktop\sada\TextEditor\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\TextEditor.csproj.AssemblyReference.cache
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\WindowsFormsApp1.exe.config
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\TextEditor.Form1.resources
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\TextEditor.csproj.GenerateResource.cache
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\TextEditor.csproj.CoreCompileInputs.cache
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\TextEditor.csproj.Up2Date
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\WindowsFormsApp1.exe
+C:\Users\Tomáš\Desktop\sada\TextEditor\obj\Debug\WindowsFormsApp1.pdb

@@ -38,6 +38,7 @@ namespace TextEditor
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            richTextBox1.Clear();
             if (comboBox1.SelectedIndex == 0)
             {
                 jazyk = "C#";
