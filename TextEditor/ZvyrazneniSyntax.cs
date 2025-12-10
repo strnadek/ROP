@@ -15,6 +15,7 @@ namespace TextEditor
 
         private bool blokovat = false;
         private string aktualniJazyk = null;
+        private string predchoziText = "";
 
         public ZvyraznovacSyntaxe(RichTextBox textbox)
         {
@@ -85,27 +86,45 @@ namespace TextEditor
             int delka = textbox.SelectionLength;
 
             textbox.SuspendLayout();
-            textbox.SelectAll();
+
+            int radek = textbox.GetLineFromCharIndex(textbox.SelectionStart);
+
+            if (radek >= textbox.Lines.Length)
+            {
+                radek = textbox.Lines.Length - 1;
+            }
+                
+            if (radek < 0)
+            {
+                blokovat = false;
+                return;
+            }
+
+            int startIndex = textbox.GetFirstCharIndexFromLine(radek);
+            int delkaRadku = textbox.Lines[radek].Length;
+            int konecIndex = startIndex + delkaRadku;
+
+            textbox.Select(startIndex, delkaRadku);
             textbox.SelectionColor = Color.Black;
 
             if (povolene.Contains("slovaC"))
             {
-                Zvyraznit(nastaveni.slovaC, Color.FromName(nastaveni.barvy.slovaC));
+                Zvyraznit(nastaveni.slovaC, Color.FromName(nastaveni.barvy.slovaC), startIndex, konecIndex);
             }
                 
             if (povolene.Contains("typyC"))
             {
-                Zvyraznit(nastaveni.typyC, Color.FromName(nastaveni.barvy.typyC));
+                Zvyraznit(nastaveni.typyC, Color.FromName(nastaveni.barvy.typyC), startIndex, konecIndex);
             }
                 
             if (povolene.Contains("operatory"))
             {
-                ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory));
+                ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory), startIndex, konecIndex);
             }
                 
             if (povolene.Contains("cisla"))
             {
-                Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla));
+                Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla), startIndex, konecIndex);
             }
                 
             textbox.SelectionStart = start;
@@ -115,26 +134,37 @@ namespace TextEditor
             blokovat = false;
         }
 
-        private void Zvyraznit(List<string> seznam, Color barva)
+        private void Zvyraznit(List<string> seznam, Color barva, int startIndex, int konecIndex)
         {
             foreach (var polozka in seznam)
             {
                 var nalezeno = Regex.Matches(textbox.Text, $@"\b{polozka}\b");
                 foreach (Match m in nalezeno)
                 {
+                    if (m.Index < startIndex || m.Index > konecIndex)
+                    {
+                        continue;
+                    }
+
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
                 }
             }
         }
 
-        private void ZvyraznitSymbol(List<string> seznam, Color barva)
+        private void ZvyraznitSymbol(List<string> seznam, Color barva, int startIndex, int konecIndex)
         {
+            
             foreach (var symbol in seznam)
             {
                 var nalezeno = Regex.Matches(textbox.Text, Regex.Escape(symbol));
                 foreach (Match m in nalezeno)
                 {
+                    if (m.Index < startIndex || m.Index > konecIndex)
+                    {
+                        continue;
+                    }
+                        
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
                 }
