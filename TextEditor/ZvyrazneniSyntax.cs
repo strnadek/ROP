@@ -15,7 +15,6 @@ namespace TextEditor
 
         private bool blokovat = false;
         private string aktualniJazyk = null;
-        private string predchoziText = "";
 
         public ZvyraznovacSyntaxe(RichTextBox textbox)
         {
@@ -189,3 +188,4 @@ namespace TextEditor
     }
 
 }
+
