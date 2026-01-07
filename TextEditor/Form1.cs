@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace TextEditor
 {
@@ -14,6 +15,7 @@ namespace TextEditor
     {
         ZvyraznovacSyntaxe zvyraznovac;
         string jazyk;
+        string aktualniSoubor = null;
 
         public Form1()
         {
@@ -54,6 +56,27 @@ namespace TextEditor
                 jazyk = "JavaScript";
                 zvyraznovac.VyberJazyku(jazyk);
             }
+        }
+
+        private void OtevritSoubor()
+        {
+            using (OpenFileDialog otevrit = new OpenFileDialog())
+            {
+                otevrit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
+                otevrit.Title = "Otevřít soubor";
+
+                if (otevrit.ShowDialog() == DialogResult.OK)
+                {
+                    aktualniSoubor = otevrit.FileName;
+                    richTextBox1.Text = File.ReadAllText(aktualniSoubor);
+                    zvyraznovac.ZvyraznitText();
+                }
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OtevritSoubor();
         }
     }
 }

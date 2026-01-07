@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace TextEditor
 {
@@ -15,6 +16,22 @@ namespace TextEditor
 
         private bool blokovat = false;
         private string aktualniJazyk = null;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, bool wParam, IntPtr lParam);
+
+        private const int WM_SETREDRAW = 0x000B;
+
+        private void BeginUpdate()
+        {
+            SendMessage(textbox.Handle, WM_SETREDRAW, false, IntPtr.Zero);
+        }
+
+        private void EndUpdate()
+        {
+            SendMessage(textbox.Handle, WM_SETREDRAW, true, IntPtr.Zero);
+            textbox.Invalidate();
+        }
 
         public ZvyraznovacSyntaxe(RichTextBox textbox)
         {
@@ -42,9 +59,7 @@ namespace TextEditor
         public void NacistJson(string soubor)
         {
             if (!File.Exists(soubor))
-            {
                 return;
-            }
 
             string obsah = File.ReadAllText(soubor);
             nastaveni = JsonConvert.DeserializeObject<NastaveniSyntaxe>(obsah);
@@ -60,110 +75,76 @@ namespace TextEditor
                 };
             }
         }
+
         public void ZvyraznitText()
         {
-            if (nastaveni == null || aktualniJazyk == null)
+            if (nastaveni == null || aktualniJazyk == null || blokovat)
             {
                 return;
             }
-
-            if (blokovat)
-            {
-                return;
-            }
-            blokovat = true;
+                
 
             if (!nastaveni.jazyk.ContainsKey(aktualniJazyk))
             {
-                blokovat = false;
                 return;
             }
 
-            var povolene = nastaveni.jazyk[aktualniJazyk];
+            blokovat = true;
+            BeginUpdate();
 
             int start = textbox.SelectionStart;
             int delka = textbox.SelectionLength;
 
-            textbox.SuspendLayout();
-
-            int radek = textbox.GetLineFromCharIndex(textbox.SelectionStart);
-
-            if (radek >= textbox.Lines.Length)
-            {
-                radek = textbox.Lines.Length - 1;
-            }
-                
-            if (radek < 0)
-            {
-                blokovat = false;
-                return;
-            }
-
-            int startIndex = textbox.GetFirstCharIndexFromLine(radek);
-            int delkaRadku = textbox.Lines[radek].Length;
-            int konecIndex = startIndex + delkaRadku;
-
-            textbox.Select(startIndex, delkaRadku);
+            textbox.SelectAll();
             textbox.SelectionColor = Color.Black;
 
+            var povolene = nastaveni.jazyk[aktualniJazyk];
+
             if (povolene.Contains("slovaC"))
-            {
-                Zvyraznit(nastaveni.slovaC, Color.FromName(nastaveni.barvy.slovaC), startIndex, konecIndex);
-            }
-                
+                Zvyraznit(nastaveni.slovaC, Color.FromName(nastaveni.barvy.slovaC));
+
             if (povolene.Contains("typyC"))
-            {
-                Zvyraznit(nastaveni.typyC, Color.FromName(nastaveni.barvy.typyC), startIndex, konecIndex);
-            }
-                
+                Zvyraznit(nastaveni.typyC, Color.FromName(nastaveni.barvy.typyC));
+
             if (povolene.Contains("operatory"))
-            {
-                ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory), startIndex, konecIndex);
-            }
-                
+                ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory));
+
             if (povolene.Contains("cisla"))
-            {
-                Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla), startIndex, konecIndex);
-            }
-                
+                Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla));
+
             textbox.SelectionStart = start;
             textbox.SelectionLength = delka;
 
-            textbox.ResumeLayout();
+            EndUpdate();
             blokovat = false;
         }
 
-        private void Zvyraznit(List<string> seznam, Color barva, int startIndex, int konecIndex)
+        private void Zvyraznit(List<string> seznam, Color barva)
         {
+            if (seznam == null) return;
+
             foreach (var polozka in seznam)
             {
-                var nalezeno = Regex.Matches(textbox.Text, $@"\b{polozka}\b");
-                foreach (Match m in nalezeno)
-                {
-                    if (m.Index < startIndex || m.Index > konecIndex)
-                    {
-                        continue;
-                    }
+                var matches = Regex.Matches(textbox.Text, $@"\b{Regex.Escape(polozka)}\b", RegexOptions.Compiled);
 
+                foreach (Match m in matches)
+                {
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
                 }
             }
         }
 
-        private void ZvyraznitSymbol(List<string> seznam, Color barva, int startIndex, int konecIndex)
+        private void ZvyraznitSymbol(List<string> seznam, Color barva)
         {
-            
+            if (seznam == null) return;
+
             foreach (var symbol in seznam)
             {
-                var nalezeno = Regex.Matches(textbox.Text, Regex.Escape(symbol));
-                foreach (Match m in nalezeno)
+                var matches = Regex.Matches(textbox.Text, Regex.Escape(symbol), RegexOptions.Compiled);
+
+                foreach (Match m in matches)
                 {
-                    if (m.Index < startIndex || m.Index > konecIndex)
-                    {
-                        continue;
-                    }
-                        
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
                 }
@@ -172,20 +153,14 @@ namespace TextEditor
 
         public void VyberJazyku(string jazyk)
         {
-            if (jazyk == null || nastaveni == null || nastaveni.jazyk == null)
-            {
+            if (jazyk == null || nastaveni?.jazyk == null)
                 return;
-            }
 
             if (!nastaveni.jazyk.ContainsKey(jazyk))
-            {
                 return;
-            }
 
             aktualniJazyk = jazyk;
             ZvyraznitText();
         }
     }
-
 }
-
