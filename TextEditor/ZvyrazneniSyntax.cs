@@ -78,16 +78,11 @@ namespace TextEditor
 
         public void ZvyraznitText()
         {
-            if (nastaveni == null || aktualniJazyk == null || blokovat)
-            {
+            if (nastaveni == null || aktualniJazyk == null || blokovat) 
                 return;
-            }
-                
 
-            if (!nastaveni.jazyk.ContainsKey(aktualniJazyk))
-            {
+            if (!nastaveni.jazyk.ContainsKey(aktualniJazyk)) 
                 return;
-            }
 
             blokovat = true;
             BeginUpdate();
@@ -110,7 +105,7 @@ namespace TextEditor
                 ZvyraznitSymbol(nastaveni.operatory, Color.FromName(nastaveni.barvy.operatory));
 
             if (povolene.Contains("cisla"))
-                Zvyraznit(nastaveni.cisla, Color.FromName(nastaveni.barvy.cisla));
+                ZvyraznitCisla(Color.FromName(nastaveni.barvy.cisla));
 
             textbox.SelectionStart = start;
             textbox.SelectionLength = delka;
@@ -148,6 +143,17 @@ namespace TextEditor
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
                 }
+            }
+        }
+
+        private void ZvyraznitCisla(Color barva)
+        {
+            var matches = Regex.Matches(textbox.Text, @"\b(-?(0b[01]+|0x[\da-fA-F]+|\d+(\.\d+)?([eE]-?\d+)?))\b", RegexOptions.Compiled);
+
+            foreach (Match m in matches)
+            {
+                textbox.Select(m.Index, m.Length);
+                textbox.SelectionColor = barva;
             }
         }
 
