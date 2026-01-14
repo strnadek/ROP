@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +16,7 @@ namespace TextEditor
         ZvyraznovacSyntaxe zvyraznovac;
         string jazyk;
         string aktualniSoubor = null;
+        private bool nacitamSoubor = false;
 
         public Form1()
         {
@@ -40,26 +41,27 @@ namespace TextEditor
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            richTextBox1.Clear();
+            if (comboBox1.SelectedIndex == -1)
+                return;
+
             if (comboBox1.SelectedIndex == 0)
-            {
-                jazyk = "C#";
-                zvyraznovac.VyberJazyku(jazyk);
-            }
+                zvyraznovac.VyberJazyku("C#");
             else if (comboBox1.SelectedIndex == 1)
-            {
-                jazyk = "PHP";
-                zvyraznovac.VyberJazyku(jazyk);
-            }
+                zvyraznovac.VyberJazyku("PHP");
             else if (comboBox1.SelectedIndex == 2)
-            {
-                jazyk = "JavaScript";
-                zvyraznovac.VyberJazyku(jazyk);
-            }
+                zvyraznovac.VyberJazyku("JavaScript");
+
+            zvyraznovac.ZvyraznitCelyText();
         }
 
         private void OtevritSoubor()
         {
+            if (comboBox1.SelectedIndex == -1)
+            {
+                MessageBox.Show("Nejprve vyberte jazyk");
+                return;
+            }
+
             using (OpenFileDialog otevrit = new OpenFileDialog())
             {
                 otevrit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
@@ -67,9 +69,43 @@ namespace TextEditor
 
                 if (otevrit.ShowDialog() == DialogResult.OK)
                 {
+                    nacitamSoubor = true;
+
                     aktualniSoubor = otevrit.FileName;
                     richTextBox1.Text = File.ReadAllText(aktualniSoubor);
-                    zvyraznovac.ZvyraznitText();
+
+                    nacitamSoubor = false;
+
+                    zvyraznovac.ZvyraznitCelyText();
+                }
+            }
+        }
+
+        private void UlozitSoubor()
+        {
+            if (string.IsNullOrWhiteSpace(richTextBox1.Text))
+            {
+                MessageBox.Show("Není co uložit");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(aktualniSoubor))
+            {
+                File.WriteAllText(aktualniSoubor, richTextBox1.Text);
+                MessageBox.Show("Soubor byl uložen");
+                return;
+            }
+
+            using (SaveFileDialog ulozit = new SaveFileDialog())
+            {
+                ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
+                ulozit.Title = "Uložit soubor";
+
+                if (ulozit.ShowDialog() == DialogResult.OK)
+                {
+                    aktualniSoubor = ulozit.FileName;
+                    File.WriteAllText(aktualniSoubor, richTextBox1.Text);
+                    MessageBox.Show("Soubor byl uložen");
                 }
             }
         }
@@ -77,6 +113,22 @@ namespace TextEditor
         private void button1_Click(object sender, EventArgs e)
         {
             OtevritSoubor();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            UlozitSoubor();
+        }
+
+        private void richTextBox1_TextChanged_1(object sender, EventArgs e)
+        {
+            if (nacitamSoubor)
+                return;
+
+            if (comboBox1.SelectedItem == null)
+                return;
+
+            zvyraznovac.ZvyraznitText();
         }
     }
 }

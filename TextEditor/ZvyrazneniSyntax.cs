@@ -1,11 +1,12 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using System.Windows.Forms;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace TextEditor
 {
@@ -78,17 +79,61 @@ namespace TextEditor
 
         public void ZvyraznitText()
         {
-            if (nastaveni == null || aktualniJazyk == null || blokovat) 
+            if (nastaveni == null || aktualniJazyk == null || blokovat)
                 return;
 
-            if (!nastaveni.jazyk.ContainsKey(aktualniJazyk)) 
+            if (!nastaveni.jazyk.ContainsKey(aktualniJazyk))
+                return;
+
+            blokovat = true;
+
+            int poziceKurzor = textbox.SelectionStart;
+            int cisloRadku = textbox.GetLineFromCharIndex(poziceKurzor);
+
+            if (cisloRadku < 0 || cisloRadku >= textbox.Lines.Length)
+            {
+                blokovat = false;
+                return;
+            }
+
+            int zacatekRadku = textbox.GetFirstCharIndexFromLine(cisloRadku);
+            string textRadku = textbox.Lines[cisloRadku];
+
+            BeginUpdate();
+
+            textbox.Select(zacatekRadku, textRadku.Length);
+            textbox.SelectionColor = Color.Black;
+
+            var povoleneKategorie = nastaveni.jazyk[aktualniJazyk];
+
+            if (povoleneKategorie.Contains("slovaC") && nastaveni.slovaC?.Count > 0)
+                ZvyraznitRegexem(textRadku, zacatekRadku, $@"\b({string.Join("|", nastaveni.slovaC)})\b", nastaveni.barvy.slovaC);
+
+            if (povoleneKategorie.Contains("typyC") && nastaveni.typyC?.Count > 0)
+                ZvyraznitRegexem(textRadku,zacatekRadku, $@"\b({string.Join("|", nastaveni.typyC)})\b", nastaveni.barvy.typyC);
+
+            if (povoleneKategorie.Contains("operatory") && nastaveni.operatory?.Count > 0)
+                ZvyraznitRegexem(textRadku,zacatekRadku, $"({string.Join("|", nastaveni.operatory.Select(Regex.Escape))})", nastaveni.barvy.operatory);
+
+            if (povoleneKategorie.Contains("cisla"))
+                ZvyraznitRegexem(textRadku, zacatekRadku, @"\b(-?(0b[01]+|0x[\da-fA-F]+|\d+(\.\d+)?([eE]-?\d+)?))\b", nastaveni.barvy.cisla);
+
+            textbox.SelectionStart = poziceKurzor;
+            textbox.SelectionLength = 0;
+
+            EndUpdate();
+            blokovat = false;
+        }
+
+        public void ZvyraznitCelyText()
+        {
+            if (nastaveni == null || aktualniJazyk == null)
                 return;
 
             blokovat = true;
             BeginUpdate();
 
-            int start = textbox.SelectionStart;
-            int delka = textbox.SelectionLength;
+            int puvodniPozice = textbox.SelectionStart;
 
             textbox.SelectAll();
             textbox.SelectionColor = Color.Black;
@@ -107,22 +152,32 @@ namespace TextEditor
             if (povolene.Contains("cisla"))
                 ZvyraznitCisla(Color.FromName(nastaveni.barvy.cisla));
 
-            textbox.SelectionStart = start;
-            textbox.SelectionLength = delka;
+            textbox.SelectionStart = puvodniPozice;
+            textbox.SelectionLength = 0;
 
             EndUpdate();
             blokovat = false;
         }
 
+        private void ZvyraznitRegexem(string textRadku, int posun, string vzor, string nazevBarvy)
+        {
+            Color barva = Color.FromName(nazevBarvy);
+
+            foreach (Match shoda in Regex.Matches(textRadku, vzor))
+            {
+                textbox.Select(posun + shoda.Index, shoda.Length);
+                textbox.SelectionColor = barva;
+            }
+        }
+
         private void Zvyraznit(List<string> seznam, Color barva)
         {
-            if (seznam == null) return;
+            if (seznam == null)
+                return;
 
-            foreach (var polozka in seznam)
+            foreach (var slovo in seznam)
             {
-                var matches = Regex.Matches(textbox.Text, $@"\b{Regex.Escape(polozka)}\b", RegexOptions.Compiled);
-
-                foreach (Match m in matches)
+                foreach (Match m in Regex.Matches(textbox.Text, $@"\b{Regex.Escape(slovo)}\b"))
                 {
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
@@ -132,13 +187,12 @@ namespace TextEditor
 
         private void ZvyraznitSymbol(List<string> seznam, Color barva)
         {
-            if (seznam == null) return;
+            if (seznam == null)
+                return;
 
             foreach (var symbol in seznam)
             {
-                var matches = Regex.Matches(textbox.Text, Regex.Escape(symbol), RegexOptions.Compiled);
-
-                foreach (Match m in matches)
+                foreach (Match m in Regex.Matches(textbox.Text, Regex.Escape(symbol)))
                 {
                     textbox.Select(m.Index, m.Length);
                     textbox.SelectionColor = barva;
@@ -148,9 +202,7 @@ namespace TextEditor
 
         private void ZvyraznitCisla(Color barva)
         {
-            var matches = Regex.Matches(textbox.Text, @"\b(-?(0b[01]+|0x[\da-fA-F]+|\d+(\.\d+)?([eE]-?\d+)?))\b", RegexOptions.Compiled);
-
-            foreach (Match m in matches)
+            foreach (Match m in Regex.Matches(textbox.Text, @"\b(-?(0b[01]+|0x[\da-fA-F]+|\d+(\.\d+)?([eE]-?\d+)?))\b"))
             {
                 textbox.Select(m.Index, m.Length);
                 textbox.SelectionColor = barva;
