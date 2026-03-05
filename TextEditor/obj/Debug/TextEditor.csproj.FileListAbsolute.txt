@@ -68,3 +68,4 @@ C:\Users\Tomáš\Desktop\ROPP\TextEditor\obj\Debug\TextEditor.csproj.CoreCompile
 C:\Users\Tomáš\Desktop\ROPP\TextEditor\obj\Debug\TextEditor.csproj.Up2Date
 C:\Users\Tomáš\Desktop\ROPP\TextEditor\obj\Debug\WindowsFormsApp1.exe
 C:\Users\Tomáš\Desktop\ROPP\TextEditor\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\Tomáš\Desktop\ROP\TextEditor\obj\Debug\WindowsFormsApp1.nastaveni.resources
