@@ -148,14 +148,32 @@ namespace TextEditor
                 return;
             }
 
-            /*Uložení v daném souboru*/
-            if (!string.IsNullOrEmpty(aktualniSoubor))
+            /*Uložení souboru*/
+            if (File.Exists(aktualniSoubor))
             {
-                if (File.Exists(aktualniSoubor))
+                if (!string.IsNullOrEmpty(aktualniSoubor))
                 {
-                    File.WriteAllText(aktualniSoubor, richTextBox1.Text);
-                    MessageBox.Show("Soubor byl uložen");
-                    return;
+                    if (File.Exists(aktualniSoubor))
+                    {
+                        File.WriteAllText(aktualniSoubor, richTextBox1.Text);
+                        MessageBox.Show("Soubor byl uložen");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                using (SaveFileDialog ulozit = new SaveFileDialog())
+                {
+                    ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
+                    ulozit.Title = "Uložit soubor";
+
+                    if (ulozit.ShowDialog() == DialogResult.OK)
+                    {
+                        aktualniSoubor = ulozit.FileName;
+                        File.WriteAllText(aktualniSoubor, richTextBox1.Text);
+                        MessageBox.Show("Soubor byl uložen");
+                    }
                 }
             }
         }
@@ -289,30 +307,6 @@ namespace TextEditor
                 richTextBox1.BackColor = Color.White;
 
                 zvyraznovac.ZvyraznitCelyText(Color.Black);
-            }
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            /*Nic se neukládá v případě, že textbox je prádzný*/
-            if (string.IsNullOrWhiteSpace(richTextBox1.Text))
-            {
-                MessageBox.Show("Není co uložit");
-                return;
-            }
-
-            /*Otevření dialogu, kde si uživatel vybírá, kam soubor uložit a s jakou příponou*/
-            using (SaveFileDialog ulozit = new SaveFileDialog())
-            {
-                ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
-                ulozit.Title = "Uložit soubor";
-
-                if (ulozit.ShowDialog() == DialogResult.OK)
-                {
-                    aktualniSoubor = ulozit.FileName;
-                    File.WriteAllText(aktualniSoubor, richTextBox1.Text);
-                    MessageBox.Show("Soubor byl uložen");
-                }
             }
         }
     }
