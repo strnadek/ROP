@@ -248,6 +248,7 @@ namespace TextEditor
 
         private void button4_Click(object sender, EventArgs e)
         {
+            /*Tmavý a světlý režim*/
             if(button4.Text == "🌙")
             {
                 WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim = true;
