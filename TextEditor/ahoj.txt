@@ -1,0 +1,5 @@
+if (string.IsNullOrWhiteSpace(aktualniSoubor))
+{
+    MessageBox.Show("Není co uložit");
+    return;
+}

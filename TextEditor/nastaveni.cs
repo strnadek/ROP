@@ -24,59 +24,67 @@ namespace WindowsFormsApp1
 
             if (barvy != null)
             {
+                /*Zabarvení tlačítka podle vybrané barvy*/
                 button1.BackColor = barvy.cisla;
                 button2.BackColor = barvy.typyC;
                 button3.BackColor = barvy.slovaC;
                 button4.BackColor = barvy.operatory;
 
+                /*Uložení barev do proměnných*/
                 barva_cislo = barvy.cisla;
                 barva_typy = barvy.typyC;
                 barva_slova = barvy.slovaC;
                 barva_operatory = barvy.operatory;
             }
 
+            /*Výpis fontu při zobrazení nastavení*/
             vybranyFont = aktualniFont;
             label4.Text = aktualniFont.Name + Environment.NewLine + aktualniFont.Style + Environment.NewLine + aktualniFont.Size;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            /*Nastavení barvy pro čísla*/
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                button1.BackColor = colorDialog1.Color;//blue
+                button1.BackColor = colorDialog1.Color;
                 this.barva_cislo = colorDialog1.Color;
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            /*Nastavení barvy pro datové typy*/
             if (colorDialog2.ShowDialog() == DialogResult.OK)
             { 
-                button2.BackColor = colorDialog2.Color;//red
+                button2.BackColor = colorDialog2.Color;
                 this.barva_typy = colorDialog2.Color;
             }  
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            /*Nastavení barvy pro klíčová slova*/
             if (colorDialog3.ShowDialog() == DialogResult.OK)
             { 
-                button3.BackColor = colorDialog3.Color;//purple
+                button3.BackColor = colorDialog3.Color;
                 this.barva_slova = colorDialog3.Color;
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            /*Nastavení barvy pro operátory*/
             if(colorDialog4.ShowDialog() == DialogResult.OK)
             {
-                button4.BackColor = colorDialog4.Color;//orange
+                button4.BackColor = colorDialog4.Color;
                 this.barva_operatory = colorDialog4.Color;
             }
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+            /*Výběr a výpis fontu*/
             if(fontDialog1.ShowDialog() == DialogResult.OK)
             {
                 vybranyFont = fontDialog1.Font;
@@ -87,11 +95,13 @@ namespace WindowsFormsApp1
 
         private void nastaveni_Load(object sender, EventArgs e)
         {
-            label4.Text = Font.Name + Environment.NewLine + Font.Style + Environment.NewLine + Font.Size;
+            /*Výpis fontu*/
+            label4.Text = vybranyFont.Name + Environment.NewLine + vybranyFont.Style + Environment.NewLine + vybranyFont.Size;
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
+            /*Zavření nastavení*/
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

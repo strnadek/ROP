@@ -77,5 +77,29 @@ namespace WindowsFormsApp1.Properties {
                 this["Font"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SvetlyRezim {
+            get {
+                return ((bool)(this["SvetlyRezim"]));
+            }
+            set {
+                this["SvetlyRezim"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TmavyRezim {
+            get {
+                return ((bool)(this["TmavyRezim"]));
+            }
+            set {
+                this["TmavyRezim"] = value;
+            }
+        }
     }
 }

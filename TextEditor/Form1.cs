@@ -18,7 +18,8 @@ namespace TextEditor
         string jazyk;
         string aktualniSoubor = null;
         private bool nacitamSoubor = false;
-        
+        private bool tmav = WindowsFormsApp1.Properties.Settings.Default.TmavyRezim;
+        private bool svet = WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim;
 
         public Form1()
         {
@@ -26,12 +27,15 @@ namespace TextEditor
 
             zvyraznovac = new ZvyraznovacSyntaxe(richTextBox1);
 
+            /*Načtení seznamu*/
             zvyraznovac.NacistJson("../../seznam.json");
 
+            /*Událost při změne v textboxu*/
             richTextBox1.TextChanged += RichTextBox1_TextChanged;
 
             comboBox1.SelectedIndex = 0;
 
+            /*Defaultní nastavení fontu a barvy textu*/
             richTextBox1.Font = WindowsFormsApp1.Properties.Settings.Default.Font ?? new Font("Consolas", 10);
             richTextBox1.ForeColor = Color.Black;
             richTextBox1.Rtf = richTextBox1.Text;
@@ -50,12 +54,26 @@ namespace TextEditor
                 WindowsFormsApp1.Properties.Settings.Default.BarvaOperatory
                 );
 
-            zvyraznovac.ZvyraznitCelyText();
+            if (svet)
+            {
+                zvyraznovac.ZvyraznitCelyText(Color.Black);
+            }
+            else if (tmav)
+            {
+                zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
+            }
         }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
-            zvyraznovac.ZvyraznitText();
+            if (svet)
+            {
+                zvyraznovac.ZvyraznitText(Color.Black);
+            }
+            else if (tmav)
+            {
+                zvyraznovac.ZvyraznitText(Color.WhiteSmoke);
+            }
             if (comboBox1.SelectedItem == null || string.IsNullOrEmpty(comboBox1.Text))
             {
                 MessageBox.Show("Vyberte prosím jazyk");
@@ -75,17 +93,26 @@ namespace TextEditor
             else if (comboBox1.SelectedIndex == 2)
                 zvyraznovac.VyberJazyku("JavaScript");
 
-            zvyraznovac.ZvyraznitCelyText();
+            if (svet)
+            {
+                zvyraznovac.ZvyraznitCelyText(Color.Black);
+            }
+            else if (tmav)
+            {
+                zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
+            }
         }
 
         private void OtevritSoubor()
         {
+            /*Kontrola jestli je vybraný jazyk*/
             if (comboBox1.SelectedIndex == -1)
             {
                 MessageBox.Show("Nejprve vyberte jazyk");
                 return;
             }
 
+            /*Otevření dialogu, kde si uživatel vybírá soubor, který chce editovat v aplikaci*/
             using (OpenFileDialog otevrit = new OpenFileDialog())
             {
                 otevrit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
@@ -100,36 +127,35 @@ namespace TextEditor
 
                     nacitamSoubor = false;
 
-                    zvyraznovac.ZvyraznitCelyText();
+                    if (svet)
+                    {
+                        zvyraznovac.ZvyraznitCelyText(Color.Black);
+                    }
+                    else if (tmav)
+                    {
+                        zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
+                    }
                 }
             }
         }
 
         private void UlozitSoubor()
         {
+            /*Nic se neukládá v případě, že textbox je prádzný*/
             if (string.IsNullOrWhiteSpace(richTextBox1.Text))
             {
                 MessageBox.Show("Není co uložit");
                 return;
             }
 
+            /*Uložení v daném souboru*/
             if (!string.IsNullOrEmpty(aktualniSoubor))
             {
-                File.WriteAllText(aktualniSoubor, richTextBox1.Text);
-                MessageBox.Show("Soubor byl uložen");
-                return;
-            }
-
-            using (SaveFileDialog ulozit = new SaveFileDialog())
-            {
-                ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
-                ulozit.Title = "Uložit soubor";
-
-                if (ulozit.ShowDialog() == DialogResult.OK)
+                if (File.Exists(aktualniSoubor))
                 {
-                    aktualniSoubor = ulozit.FileName;
                     File.WriteAllText(aktualniSoubor, richTextBox1.Text);
                     MessageBox.Show("Soubor byl uložen");
+                    return;
                 }
             }
         }
@@ -152,7 +178,14 @@ namespace TextEditor
             if (comboBox1.SelectedItem == null)
                 return;
 
-            zvyraznovac.ZvyraznitText();
+            if (svet)
+            {
+                zvyraznovac.ZvyraznitText(Color.Black);
+            }
+            else if (tmav)
+            {
+                zvyraznovac.ZvyraznitText(Color.WhiteSmoke);
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -160,6 +193,7 @@ namespace TextEditor
             var aktualniBarvy = zvyraznovac.ZiskejBarvy();
             nastaveni nastaveni = new nastaveni(aktualniBarvy, richTextBox1.Font);
 
+            /*Zobrazení nastavení*/
             if (nastaveni.ShowDialog() == DialogResult.OK)
             {
                 richTextBox1.Font = nastaveni.vybranyFont;
@@ -171,7 +205,14 @@ namespace TextEditor
                     nastaveni.barva_operatory
                 );
 
-                zvyraznovac.ZvyraznitCelyText();
+                if (svet)
+                {
+                    zvyraznovac.ZvyraznitCelyText(Color.Black);
+                }
+                else if (tmav)
+                {
+                    zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
+                }
             }
 
             /*Uložení barev a fontu*/
@@ -187,7 +228,91 @@ namespace TextEditor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            zvyraznovac.ZvyraznitCelyText();
+            if (svet)
+            {
+                button4.Text = "🌙";
+
+                richTextBox1.BackColor = Color.White;
+
+                zvyraznovac.ZvyraznitCelyText(Color.Black);
+            }
+            else if (tmav)
+            {
+                button4.Text = "☀️";
+
+                richTextBox1.BackColor = Color.FromArgb(30, 30, 30);
+
+                zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if(button4.Text == "🌙")
+            {
+                WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim = true;
+                WindowsFormsApp1.Properties.Settings.Default.TmavyRezim = false;
+
+                WindowsFormsApp1.Properties.Settings.Default.Save();
+            }
+            else if(button4.Text == "☀️")
+            {
+                WindowsFormsApp1.Properties.Settings.Default.TmavyRezim = true;
+                WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim = false;
+
+                WindowsFormsApp1.Properties.Settings.Default.Save();
+            }
+
+            if (!WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
+            {
+                WindowsFormsApp1.Properties.Settings.Default.TmavyRezim = true;
+                WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim = false;
+
+                WindowsFormsApp1.Properties.Settings.Default.Save();
+
+                button4.Text = "☀️";
+
+                richTextBox1.BackColor = Color.FromArgb(30, 30, 30);
+
+                zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
+            }
+            else if (!WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
+            {
+                WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim = true;
+                WindowsFormsApp1.Properties.Settings.Default.TmavyRezim = false;
+
+                WindowsFormsApp1.Properties.Settings.Default.Save();
+
+                button4.Text = "🌙";
+
+                richTextBox1.BackColor = Color.White;
+
+                zvyraznovac.ZvyraznitCelyText(Color.Black);
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            /*Nic se neukládá v případě, že textbox je prádzný*/
+            if (string.IsNullOrWhiteSpace(richTextBox1.Text))
+            {
+                MessageBox.Show("Není co uložit");
+                return;
+            }
+
+            /*Otevření dialogu, kde si uživatel vybírá, kam soubor uložit a s jakou příponou*/
+            using (SaveFileDialog ulozit = new SaveFileDialog())
+            {
+                ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
+                ulozit.Title = "Uložit soubor";
+
+                if (ulozit.ShowDialog() == DialogResult.OK)
+                {
+                    aktualniSoubor = ulozit.FileName;
+                    File.WriteAllText(aktualniSoubor, richTextBox1.Text);
+                    MessageBox.Show("Soubor byl uložen");
+                }
+            }
         }
     }
 }

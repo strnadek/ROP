@@ -18,6 +18,7 @@ namespace TextEditor
         private bool blokovat = false;
         private string aktualniJazyk = null;
 
+        /*BeginUpdate*/
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, bool wParam, IntPtr lParam);
 
@@ -67,11 +68,13 @@ namespace TextEditor
 
         public Barvy ZiskejBarvy()
         {
+            /*Získaní uložených barev*/
             return nastaveni?.barvy;
         }
 
         public void NacistJson(string soubor)
         {
+            /*Naèítání seznamu z JSON*/
             if (!File.Exists(soubor))
                 return;
 
@@ -79,7 +82,7 @@ namespace TextEditor
             nastaveni = JsonConvert.DeserializeObject<NastaveniSyntaxe>(obsah);
         }
 
-        public void ZvyraznitText()
+        public void ZvyraznitText(Color barva)
         {
             if (nastaveni == null || aktualniJazyk == null || blokovat)
                 return;
@@ -104,7 +107,7 @@ namespace TextEditor
             BeginUpdate();
 
             textbox.Select(zacatekRadku, textRadku.Length);
-            textbox.SelectionColor = Color.Black;
+            textbox.SelectionColor = barva;
 
             var povoleneKategorie = nastaveni.jazyk[aktualniJazyk];
 
@@ -141,6 +144,7 @@ namespace TextEditor
 
         public void ZvyraznitCelyText()
         {
+            /*Zvýraznit celý text pøi vložení textu nebo otevøení souboru*/
             textbox.SelectAll();
             textbox.SelectionColor = Color.Black;
             textbox.SelectionFont = textbox.Font;
@@ -189,9 +193,59 @@ namespace TextEditor
             blokovat = false;
         }
 
+        public void ZvyraznitCelyText(Color barva)
+        {
+            /*Zvýraznit celý text pøi vložení textu nebo otevøení souboru*/
+            textbox.SelectAll();
+            textbox.SelectionColor = barva;
+            textbox.SelectionFont = textbox.Font;
+
+            if (nastaveni == null || aktualniJazyk == null)
+                return;
+
+            blokovat = true;
+            BeginUpdate();
+
+            int puvodniPozice = textbox.SelectionStart;
+
+            textbox.SelectAll();
+            textbox.SelectionColor = barva;
+
+            var povolene = nastaveni.jazyk[aktualniJazyk];
+
+            if (povolene.Contains("slovaC"))
+                Zvyraznit(nastaveni.slovaC, nastaveni.barvy.slovaC);
+
+            if (povolene.Contains("typyC"))
+                Zvyraznit(nastaveni.typyC, nastaveni.barvy.typyC);
+
+            if (povolene.Contains("slovaPHP"))
+                Zvyraznit(nastaveni.slovaPHP, nastaveni.barvy.slovaPHP);
+
+            if (povolene.Contains("typyPHP"))
+                Zvyraznit(nastaveni.typyPHP, nastaveni.barvy.typyPHP);
+
+            if (povolene.Contains("slovaJS"))
+                Zvyraznit(nastaveni.slovaJS, nastaveni.barvy.slovaJS);
+
+            if (povolene.Contains("typyJS"))
+                Zvyraznit(nastaveni.typyJS, nastaveni.barvy.typyJS);
+
+            if (povolene.Contains("operatory"))
+                ZvyraznitSymbol(nastaveni.operatory, nastaveni.barvy.operatory);
+
+            if (povolene.Contains("cisla"))
+                ZvyraznitCisla(nastaveni.barvy.cisla);
+
+            textbox.SelectionStart = puvodniPozice;
+            textbox.SelectionLength = 0;
+
+            EndUpdate();
+            blokovat = false;
+        }
+
         private void ZvyraznitRegexem(string textRadku, int posun, string vzor, Color b)
         {
-
             foreach (Match shoda in Regex.Matches(textRadku, vzor))
             {
                 textbox.Select(posun + shoda.Index, shoda.Length);
@@ -216,6 +270,7 @@ namespace TextEditor
 
         private void ZvyraznitSymbol(List<string> seznam, Color barva)
         {
+            /*Zvýraznìní symbolù (operátorù)*/
             if (seznam == null)
                 return;
 
@@ -231,6 +286,7 @@ namespace TextEditor
 
         private void ZvyraznitCisla(Color barva)
         {
+            /*Zvýraznìní èísel*/
             foreach (Match m in Regex.Matches(textbox.Text, @"\b(-?(0b[01]+|0x[\da-fA-F]+|\d+(\.\d+)?([eE]-?\d+)?))\b"))
             {
                 textbox.Select(m.Index, m.Length);
@@ -240,6 +296,7 @@ namespace TextEditor
 
         public void VyberJazyku(string jazyk)
         {
+            /*Výbìr programovacího jazyku*/
             if (jazyk == null || nastaveni?.jazyk == null)
                 return;
 
@@ -247,17 +304,21 @@ namespace TextEditor
                 return;
 
             aktualniJazyk = jazyk;
-            ZvyraznitText();
         }
 
         public void NastavBarvy(Color cisla, Color typy, Color slova, Color operatory)
         {
+            /*Nastavení barev*/
             if (nastaveni == null)
                 return;
 
             nastaveni.barvy.cisla = cisla;
             nastaveni.barvy.typyC = typy;
+            nastaveni.barvy.typyPHP = typy;
+            nastaveni.barvy.typyJS = typy;
             nastaveni.barvy.slovaC = slova;
+            nastaveni.barvy.slovaPHP = slova;
+            nastaveni.barvy.slovaJS = slova;
             nastaveni.barvy.operatory = operatory;
         }
     }
