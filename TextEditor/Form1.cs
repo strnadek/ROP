@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 using WindowsFormsApp1;
 
 namespace TextEditor
@@ -15,11 +16,8 @@ namespace TextEditor
     public partial class Form1 : Form
     {
         ZvyraznovacSyntaxe zvyraznovac;
-        string jazyk;
         string aktualniSoubor = null;
         private bool nacitamSoubor = false;
-        private bool tmav = WindowsFormsApp1.Properties.Settings.Default.TmavyRezim;
-        private bool svet = WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim;
 
         public Form1()
         {
@@ -54,11 +52,11 @@ namespace TextEditor
                 WindowsFormsApp1.Properties.Settings.Default.BarvaOperatory
                 );
 
-            if (svet)
+            if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
             {
                 zvyraznovac.ZvyraznitCelyText(Color.Black);
             }
-            else if (tmav)
+            else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
             {
                 zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
             }
@@ -66,11 +64,11 @@ namespace TextEditor
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
-            if (svet)
+            if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
             {
                 zvyraznovac.ZvyraznitText(Color.Black);
             }
-            else if (tmav)
+            else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
             {
                 zvyraznovac.ZvyraznitText(Color.WhiteSmoke);
             }
@@ -93,11 +91,11 @@ namespace TextEditor
             else if (comboBox1.SelectedIndex == 2)
                 zvyraznovac.VyberJazyku("JavaScript");
 
-            if (svet)
+            if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
             {
                 zvyraznovac.ZvyraznitCelyText(Color.Black);
             }
-            else if (tmav)
+            else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
             {
                 zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
             }
@@ -115,7 +113,7 @@ namespace TextEditor
             /*Otevření dialogu, kde si uživatel vybírá soubor, který chce editovat v aplikaci*/
             using (OpenFileDialog otevrit = new OpenFileDialog())
             {
-                otevrit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
+                otevrit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js";
                 otevrit.Title = "Otevřít soubor";
 
                 if (otevrit.ShowDialog() == DialogResult.OK)
@@ -127,11 +125,11 @@ namespace TextEditor
 
                     nacitamSoubor = false;
 
-                    if (svet)
+                    if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
                     {
                         zvyraznovac.ZvyraznitCelyText(Color.Black);
                     }
-                    else if (tmav)
+                    else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
                     {
                         zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
                     }
@@ -165,7 +163,7 @@ namespace TextEditor
             {
                 using (SaveFileDialog ulozit = new SaveFileDialog())
                 {
-                    ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js|Všechny soubory|*.*";
+                    ulozit.Filter = "Textové soubory|*.txt|C#|*.cs|PHP|*.php|JavaScript|*.js";
                     ulozit.Title = "Uložit soubor";
 
                     if (ulozit.ShowDialog() == DialogResult.OK)
@@ -196,11 +194,11 @@ namespace TextEditor
             if (comboBox1.SelectedItem == null)
                 return;
 
-            if (svet)
+            if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
             {
                 zvyraznovac.ZvyraznitText(Color.Black);
             }
-            else if (tmav)
+            else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
             {
                 zvyraznovac.ZvyraznitText(Color.WhiteSmoke);
             }
@@ -223,11 +221,11 @@ namespace TextEditor
                     nastaveni.barva_operatory
                 );
 
-                if (svet)
+                if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
                 {
                     zvyraznovac.ZvyraznitCelyText(Color.Black);
                 }
-                else if (tmav)
+                else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
                 {
                     zvyraznovac.ZvyraznitCelyText(Color.WhiteSmoke);
                 }
@@ -246,7 +244,7 @@ namespace TextEditor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (svet)
+            if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
             {
                 button4.Text = "🌙";
 
@@ -254,7 +252,7 @@ namespace TextEditor
 
                 zvyraznovac.ZvyraznitCelyText(Color.Black);
             }
-            else if (tmav)
+            else if (WindowsFormsApp1.Properties.Settings.Default.TmavyRezim)
             {
                 button4.Text = "☀️";
 
