@@ -38,6 +38,7 @@ namespace WindowsFormsApp1
                 barva_typy = barvy.typyC;
                 barva_slova = barvy.slovaC;
                 barva_operatory = barvy.operatory;
+                barva_retezce = barvy.retezce;
             }
 
             /*Výpis fontu při zobrazení nastavení*/
@@ -115,7 +116,7 @@ namespace WindowsFormsApp1
             if (colorDialog5.ShowDialog() == DialogResult.OK)
             {
                 button7.BackColor = colorDialog5.Color;
-                this.barva_operatory = colorDialog5.Color;
+                this.barva_retezce = colorDialog5.Color;
             }
         }
     }
