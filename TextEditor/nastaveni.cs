@@ -17,6 +17,7 @@ namespace WindowsFormsApp1
         public Color barva_typy { get; private set; }
         public Color barva_slova { get; private set; }
         public Color barva_operatory { get; private set; }
+        public Color barva_retezce { get; private set; }
         public Font vybranyFont { get; private set; }
 
         public nastaveni(TextEditor.ZvyraznovacSyntaxe.Barvy barvy, Font aktualniFont)
@@ -30,6 +31,7 @@ namespace WindowsFormsApp1
                 button2.BackColor = barvy.typyC;
                 button3.BackColor = barvy.slovaC;
                 button4.BackColor = barvy.operatory;
+                button7.BackColor = barvy.retezce;
 
                 /*Uložení barev do proměnných*/
                 barva_cislo = barvy.cisla;
@@ -105,6 +107,16 @@ namespace WindowsFormsApp1
             /*Zavření nastavení*/
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            /*Nastavení barvy pro řetězce*/
+            if (colorDialog5.ShowDialog() == DialogResult.OK)
+            {
+                button7.BackColor = colorDialog5.Color;
+                this.barva_operatory = colorDialog5.Color;
+            }
         }
     }
 }

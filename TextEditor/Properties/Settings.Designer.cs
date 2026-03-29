@@ -25,6 +25,7 @@ namespace WindowsFormsApp1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
         public global::System.Drawing.Color BarvaCisla {
             get {
                 return ((global::System.Drawing.Color)(this["BarvaCisla"]));
@@ -36,6 +37,7 @@ namespace WindowsFormsApp1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
         public global::System.Drawing.Color BarvaTypy {
             get {
                 return ((global::System.Drawing.Color)(this["BarvaTypy"]));
@@ -47,6 +49,7 @@ namespace WindowsFormsApp1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
         public global::System.Drawing.Color BarvaSlova {
             get {
                 return ((global::System.Drawing.Color)(this["BarvaSlova"]));
@@ -58,6 +61,7 @@ namespace WindowsFormsApp1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Orange")]
         public global::System.Drawing.Color BarvaOperatory {
             get {
                 return ((global::System.Drawing.Color)(this["BarvaOperatory"]));
@@ -99,6 +103,30 @@ namespace WindowsFormsApp1.Properties {
             }
             set {
                 this["TmavyRezim"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Brown")]
+        public global::System.Drawing.Color BarvaRetezce {
+            get {
+                return ((global::System.Drawing.Color)(this["BarvaRetezce"]));
+            }
+            set {
+                this["BarvaRetezce"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string a {
+            get {
+                return ((string)(this["a"]));
+            }
+            set {
+                this["a"] = value;
             }
         }
     }

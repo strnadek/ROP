@@ -49,7 +49,6 @@ namespace TextEditor
             public List<string> slovaJS { get; set; }
             public List<string> typyJS { get; set; }
             public List<string> operatory { get; set; }
-            public List<string> cisla { get; set; }
             public Barvy barvy { get; set; }
             public Dictionary<string, List<string>> jazyk { get; set; }
         }
@@ -64,6 +63,7 @@ namespace TextEditor
             public Color typyJS { get; set; }
             public Color operatory { get; set; }
             public Color cisla { get; set; }
+            public Color retezce { get; set; }
         }
 
         public Barvy ZiskejBarvy()
@@ -135,58 +135,9 @@ namespace TextEditor
             if (povoleneKategorie.Contains("cisla"))
                 ZvyraznitRegexem(textRadku, zacatekRadku, @"\b(-?(0b[01]+|0x[\da-fA-F]+|\d+(\.\d+)?([eE]-?\d+)?))\b", nastaveni.barvy.cisla);
 
+            ZvyraznitRegexem(textRadku, zacatekRadku, "\".*?\"", nastaveni.barvy.retezce);
+
             textbox.SelectionStart = poziceKurzor;
-            textbox.SelectionLength = 0;
-
-            EndUpdate();
-            blokovat = false;
-        }
-
-        public void ZvyraznitCelyText()
-        {
-            /*Zvýraznit celý text pøi vložení textu nebo otevøení souboru*/
-            textbox.SelectAll();
-            textbox.SelectionColor = Color.Black;
-            textbox.SelectionFont = textbox.Font;
-
-            if (nastaveni == null || aktualniJazyk == null)
-                return;
-
-            blokovat = true;
-            BeginUpdate();
-
-            int puvodniPozice = textbox.SelectionStart;
-
-            textbox.SelectAll();
-            textbox.SelectionColor = Color.Black;
-
-            var povolene = nastaveni.jazyk[aktualniJazyk];
-
-            if (povolene.Contains("slovaC"))
-                Zvyraznit(nastaveni.slovaC, nastaveni.barvy.slovaC);
-
-            if (povolene.Contains("typyC"))
-                Zvyraznit(nastaveni.typyC, nastaveni.barvy.typyC);
-
-            if (povolene.Contains("slovaPHP"))
-                Zvyraznit(nastaveni.slovaPHP, nastaveni.barvy.slovaPHP);
-
-            if (povolene.Contains("typyPHP"))
-                Zvyraznit(nastaveni.typyPHP, nastaveni.barvy.typyPHP);
-
-            if (povolene.Contains("slovaJS"))
-                Zvyraznit(nastaveni.slovaJS, nastaveni.barvy.slovaJS);
-
-            if (povolene.Contains("typyJS"))
-                Zvyraznit(nastaveni.typyJS, nastaveni.barvy.typyJS);
-
-            if (povolene.Contains("operatory"))
-                ZvyraznitSymbol(nastaveni.operatory, nastaveni.barvy.operatory);
-
-            if (povolene.Contains("cisla"))
-                ZvyraznitCisla(nastaveni.barvy.cisla);
-
-            textbox.SelectionStart = puvodniPozice;
             textbox.SelectionLength = 0;
 
             EndUpdate();
@@ -237,6 +188,8 @@ namespace TextEditor
             if (povolene.Contains("cisla"))
                 ZvyraznitCisla(nastaveni.barvy.cisla);
 
+            ZvyraznitRegexem("\".*?\"", nastaveni.barvy.retezce);
+
             textbox.SelectionStart = puvodniPozice;
             textbox.SelectionLength = 0;
 
@@ -244,17 +197,27 @@ namespace TextEditor
             blokovat = false;
         }
 
+        private void ZvyraznitRegexem(string vzor, Color b)
+        {
+            foreach (Match m in Regex.Matches(textbox.Text, vzor))
+            {
+                textbox.Select(m.Index, m.Length);
+                textbox.SelectionColor = b;
+            }
+        }
+
         private void ZvyraznitRegexem(string textRadku, int posun, string vzor, Color b)
         {
-            foreach (Match shoda in Regex.Matches(textRadku, vzor))
+            foreach (Match m in Regex.Matches(textRadku, vzor))
             {
-                textbox.Select(posun + shoda.Index, shoda.Length);
+                textbox.Select(posun + m.Index, m.Length);
                 textbox.SelectionColor = b;
             }
         }
 
         private void Zvyraznit(List<string> seznam, Color barva)
         {
+            /*Zvýraznìní*/
             if (seznam == null)
                 return;
 
@@ -306,7 +269,7 @@ namespace TextEditor
             aktualniJazyk = jazyk;
         }
 
-        public void NastavBarvy(Color cisla, Color typy, Color slova, Color operatory)
+        public void NastavBarvy(Color cisla, Color typy, Color slova, Color operatory, Color retezce)
         {
             /*Nastavení barev*/
             if (nastaveni == null)
@@ -320,6 +283,7 @@ namespace TextEditor
             nastaveni.barvy.slovaPHP = slova;
             nastaveni.barvy.slovaJS = slova;
             nastaveni.barvy.operatory = operatory;
+            nastaveni.barvy.retezce = retezce;
         }
     }
 }

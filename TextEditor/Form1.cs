@@ -49,7 +49,8 @@ namespace TextEditor
                 WindowsFormsApp1.Properties.Settings.Default.BarvaCisla,
                 WindowsFormsApp1.Properties.Settings.Default.BarvaTypy,
                 WindowsFormsApp1.Properties.Settings.Default.BarvaSlova,
-                WindowsFormsApp1.Properties.Settings.Default.BarvaOperatory
+                WindowsFormsApp1.Properties.Settings.Default.BarvaOperatory,
+                WindowsFormsApp1.Properties.Settings.Default.BarvaRetezce
                 );
 
             if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
@@ -218,7 +219,8 @@ namespace TextEditor
                     nastaveni.barva_cislo,
                     nastaveni.barva_typy,
                     nastaveni.barva_slova,
-                    nastaveni.barva_operatory
+                    nastaveni.barva_operatory,
+                    nastaveni.barva_retezce
                 );
 
                 if (WindowsFormsApp1.Properties.Settings.Default.SvetlyRezim)
@@ -236,6 +238,7 @@ namespace TextEditor
             WindowsFormsApp1.Properties.Settings.Default.BarvaTypy = nastaveni.barva_typy;
             WindowsFormsApp1.Properties.Settings.Default.BarvaSlova = nastaveni.barva_slova;
             WindowsFormsApp1.Properties.Settings.Default.BarvaOperatory = nastaveni.barva_operatory;
+            WindowsFormsApp1.Properties.Settings.Default.BarvaRetezce = nastaveni.barva_retezce;
 
             WindowsFormsApp1.Properties.Settings.Default.Font = nastaveni.vybranyFont;
 
